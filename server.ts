@@ -1,5 +1,6 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
+import routes from "./routes/routes"
 
 const port = 3000;
 const app = Fastify({
@@ -8,13 +9,8 @@ const app = Fastify({
 
 
 // Declare a route
-app.get('/', async function handler(request, reply) {
-    return "Welcome on PDF generator"
-})
+app.register(routes);
 
-app.get('/api/pdf', async function handler(request, reply) {
-    return "Give me your url"
-})
 
 // Run the server!
 const start = async () => {
