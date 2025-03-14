@@ -7,13 +7,12 @@ const app = Fastify({
     logger: true
 })
 
-
 // Declare a route
 app.register(routes);
 
 
 // Run the server!
-const start = async () => {
+export const start = async () => {
     try {
         await app.listen({ port: port })
         console.log(`server is running on port ${port} 🚀`)
@@ -22,5 +21,3 @@ const start = async () => {
         process.exit(1)
     }
 }
-
-start()
