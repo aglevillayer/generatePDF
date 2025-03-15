@@ -1,8 +1,9 @@
-FROM node:lts-alpine
+FROM node:20-buster-slim
 
 RUN mkdir /app
 WORKDIR /app
 COPY package.json package.json
+COPY tsconfig.json tsconfig.json
 RUN npm i
-COPY . ./
+COPY src src
 CMD npm run dev
