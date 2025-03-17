@@ -14,7 +14,7 @@ app.register(routes);
 // Run the server!
 export const start = async () => {
     try {
-        await app.listen({ port: port })
+        await app.listen({ port: port, host: "0.0.0.0" })
         console.log(`server is running on port ${port} 🚀`)
     } catch (err) {
         app.log.error(err)
