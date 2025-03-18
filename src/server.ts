@@ -1,4 +1,3 @@
-// Import the framework and instantiate it
 import Fastify from 'fastify'
 import routes from "./routes/routes"
 
@@ -7,11 +6,10 @@ const app = Fastify({
     logger: true
 })
 
-// Declare a route
+// declare routes
 app.register(routes);
 
-
-// Run the server!
+// run the server
 export const start = async () => {
     try {
         await app.listen({ port: port, host: "0.0.0.0" })
