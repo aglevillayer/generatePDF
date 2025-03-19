@@ -24,5 +24,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: .
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/generate_pdf_app:latest
