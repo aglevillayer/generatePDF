@@ -8,4 +8,4 @@ COPY tsconfig.json tsconfig.json
 RUN npm i
 COPY src src
 
-CMD ["npm", "run dev"]
+CMD npm run dev
