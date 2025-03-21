@@ -31,10 +31,10 @@ async function routes(app: FastifyInstance) {
         const page = await browser.newPage();
 
         // navigate to the given URL
-        await page.goto(url.toString(), { waitUntil: "commit" });
+        await page.goto(url.toString(), { waitUntil: "networkidle" });
 
-        // generates PDF with 'screen' media type.
-        await page.emulateMedia({ media: 'screen' });
+        // generates PDF with 'print' media type.
+        await page.emulateMedia({ media: 'print' });
         const pdf = await page.pdf({
             format: "A4"
         });
