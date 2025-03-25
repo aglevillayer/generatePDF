@@ -6,14 +6,11 @@ async function routes(app: FastifyInstance) {
 
     // route /
     app.get('/', async function handler() {
-        console.log("Route /")
         return "Welcome on PDF generator"
     });
 
     // route /api/pdf
     app.get('/api/pdf', async (request: FastifyRequest<{ Querystring: UrlParamsType }>) => {
-        console.log("Route /api/pdf")
-
         // get the url given in query
         const { url } = request.query;
         if (!url) {
