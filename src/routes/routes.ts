@@ -7,7 +7,7 @@ async function routes(app: FastifyInstance) {
     // route /
     app.get('/', async function handler() {
         console.log("Route /")
-        return "Welcome on PDF generator"
+        return "Welcome on PDF generator, pre-prod app"
     });
 
     // route /api/pdf
