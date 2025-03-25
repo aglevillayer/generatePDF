@@ -1,8 +1,6 @@
 name: docker-ci
 
-on: 
-  push
-  pull-request
+on: pull-request
 
 jobs:
   docker:
