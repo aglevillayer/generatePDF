@@ -1,13 +1,15 @@
 {
   "version": "1.0.0",
   "scripts": {
-    "dev": "ts-node-dev --respawn ./src/index.ts"
+    "dev": "ts-node-dev --respawn ./src/index.ts",
+    "test": "npx playwright test"
   },
   "dependencies": {
     "fastify": "^5.2.1",
     "playwright": "^1.51.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.10",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.2"
