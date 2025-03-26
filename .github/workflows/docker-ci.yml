@@ -24,7 +24,7 @@ jobs:
   #         retention-days: 30
   docker-main:
     # needs: test
-    if: github.ref == 'refs/pull/18'
+    if: github.ref == 'refs/pull/18/merge'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
