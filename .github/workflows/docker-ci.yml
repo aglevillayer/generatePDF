@@ -1,6 +1,6 @@
 name: docker-ci
 
-on: pull_request
+on: pull_request_target
 
 jobs:
   # test:
@@ -24,7 +24,7 @@ jobs:
   #         retention-days: 30
   docker-main:
     # needs: test
-    if: github.ref == 'refs/pull/18/merge'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
