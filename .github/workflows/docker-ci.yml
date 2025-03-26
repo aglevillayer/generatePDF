@@ -7,8 +7,6 @@ on:
     branches: dev
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
   docker-dev:
     needs: test
     if: github.ref == 'refs/heads/dev'
