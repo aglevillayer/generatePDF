@@ -22,7 +22,7 @@ jobs:
   #         name: playwright-report
   #         path: playwright-report/
   #         retention-days: 30
-  docker-main:
+  docker:
     # needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
