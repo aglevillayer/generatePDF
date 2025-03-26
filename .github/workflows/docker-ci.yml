@@ -3,7 +3,7 @@ name: docker-ci
 on:
   push:
     branches: main
-  pull_request:
+  pull_request_target:
     branches: main
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
   #         retention-days: 30
   docker-main:
     # needs: test
-    if: GITHUB_REF == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
