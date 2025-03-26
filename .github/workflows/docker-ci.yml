@@ -2,13 +2,13 @@ name: docker-ci
 
 on:
   push:
-    branches: dev
+    branches: main
   pull_request:
-    branches: dev
+    branches: main
 
 jobs:
-  docker-dev:
-    if: github.ref == 'refs/heads/main/dev'
+  docker-main:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
@@ -24,4 +24,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/generate_pdf_app:dev
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/generate_pdf_app:latest
