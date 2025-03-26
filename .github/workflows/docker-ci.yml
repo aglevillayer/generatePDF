@@ -28,7 +28,7 @@ jobs:
   #         retention-days: 30
   docker-main:
     # needs: test
-    if: github.head.ref == 'refs/heads/main'
+    if: GITHUB_REF == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
