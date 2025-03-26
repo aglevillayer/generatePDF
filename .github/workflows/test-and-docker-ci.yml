@@ -43,7 +43,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/generate_pdf_app:latest
 
   docker-dev:
-    # needs: test
+    needs: test
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
