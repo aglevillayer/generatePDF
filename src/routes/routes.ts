@@ -7,25 +7,6 @@ async function routes(app: FastifyInstance) {
 
     // route /
     app.get('/', async function handler() {
-        const algorithm = 'aes-256-cbc';
-        const secretKey = process.env.ENCRYPT_KEY || 'mypassword';
-        console.log("secretKey")
-        console.log(secretKey)
-        const key = crypto.scryptSync(secretKey, 'salt', 32);
-        const iv = Buffer.alloc(16, 0);
-
-        const strToEncrypt = 'https://www.google.fr';
-        const cipher = crypto.createCipheriv(algorithm, key, iv);
-        let mystrEncrypted = cipher.update(strToEncrypt, 'utf8', 'hex')
-        mystrEncrypted += cipher.final('hex');
-
-        // encoded cryptedURL in base64
-        // const encryptedUrlBase64 = btoa(encodeURIComponent(mystrEncrypted))
-        const encryptedUrlBase64 = Buffer.from(mystrEncrypted, "hex").toString("base64url") // valable que côté nodeJS = permet de passer d'une base à une autre (ici hex en base64url) = encoder 
-        console.log("encryptedUrlBase64")
-        console.log(encryptedUrlBase64)
-
-
         return "Welcome on PDF generator"
     });
 
@@ -37,8 +18,7 @@ async function routes(app: FastifyInstance) {
             throw new Error("No token given");
         }
 
-        // decode base64
-        // const urlEncrypted = decodeURIComponent(atob(token));
+        // decode base64url
         const urlEncrypted = Buffer.from(token, "base64url").toString("hex")
 
         // decrypte token to get url
