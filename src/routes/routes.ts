@@ -5,27 +5,27 @@ import crypto from "crypto";
 async function routes(app: FastifyInstance) {
     type UrlParamsType = { token: string }
 
-    // A VIRER : à faire dans le client utilisant l'API
-    // crypte url
-    const algorithm = 'aes-256-cbc';
-    const secretKey = process.env.ENCRYPT_KEY || 'mypassword';
-    console.log("secretKey")
-    console.log(secretKey)
-    const key = crypto.scryptSync(secretKey, 'salt', 32);
-    const iv = Buffer.alloc(16, 0);
-
-    const strToEncrypt = 'https://www.wikipedia.fr';
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    let mystrEncrypted = cipher.update(strToEncrypt, 'utf8', 'hex')
-    mystrEncrypted += cipher.final('hex');
-
-    // encoded cryptedURL in base64
-    const encryptedUrlBase64 = btoa(encodeURIComponent(mystrEncrypted))
-    console.log("encryptedUrlBase64")
-    console.log(encryptedUrlBase64)
-
     // route /
     app.get('/', async function handler() {
+        const algorithm = 'aes-256-cbc';
+        const secretKey = process.env.ENCRYPT_KEY || 'mypassword';
+        console.log("secretKey")
+        console.log(secretKey)
+        const key = crypto.scryptSync(secretKey, 'salt', 32);
+        const iv = Buffer.alloc(16, 0);
+
+        const strToEncrypt = 'https://www.google.fr';
+        const cipher = crypto.createCipheriv(algorithm, key, iv);
+        let mystrEncrypted = cipher.update(strToEncrypt, 'utf8', 'hex')
+        mystrEncrypted += cipher.final('hex');
+
+        // encoded cryptedURL in base64
+        // const encryptedUrlBase64 = btoa(encodeURIComponent(mystrEncrypted))
+        const encryptedUrlBase64 = Buffer.from(mystrEncrypted, "hex").toString("base64url") // valable que côté nodeJS = permet de passer d'une base à une autre (ici hex en base64url) = encoder 
+        console.log("encryptedUrlBase64")
+        console.log(encryptedUrlBase64)
+
+
         return "Welcome on PDF generator"
     });
 
@@ -34,15 +34,19 @@ async function routes(app: FastifyInstance) {
         // get the token given in query
         const { token } = request.query;
         if (!token) {
-            return "Please, indicate the url to pdf"
+            throw new Error("No token given");
         }
 
         // decode base64
-        const urlEncrypted = decodeURIComponent(atob(token));
+        // const urlEncrypted = decodeURIComponent(atob(token));
+        const urlEncrypted = Buffer.from(token, "base64url").toString("hex")
 
         // decrypte token to get url
         const algorithm = 'aes-256-cbc';
-        const secretKey = process.env.ENCRYPT_KEY || 'mypassword';
+        if (!process.env.ENCRYPT_KEY) {
+            throw new Error("Error in decrypting token");
+        }
+        const secretKey = process.env.ENCRYPT_KEY;
         const key = crypto.scryptSync(secretKey, 'salt', 32);
         const iv = Buffer.alloc(16, 0);
 
@@ -56,7 +60,6 @@ async function routes(app: FastifyInstance) {
         if (!url.match(urlRegex)) {
             throw new Error("Invalid URL");
         }
-        console.log("valid url")
 
         // launch the browser and open a new blank page
         const browser = await chromium.launch()
