@@ -12,10 +12,10 @@ async function routes(app: FastifyInstance) {
     // route /
     app.get('/', async function handler() {
         const givenToken = {
-            url: "http://wikipedia.fr",
+            url: "https://lagirodiere.com",
             pagination: true,
-            header: "<span style=\"font-size: 20px;color:#000000;\">HEADER</span>",
-            footer: "<span style=\"font-size: 20px;color:#000000;\">FOOTER</span>"
+            header: "<span style=\"font-size: 10px;color:#000000;padding:10px;\">ASUL ULTIMATE & DISC GOLF</span>",
+            footer: "<span style=\"font-size: 10px;color:#000000;padding:10px;\">FOOTER</span>"
 
         }
         const stringifiedToken = JSON.stringify(givenToken);
@@ -93,14 +93,24 @@ async function routes(app: FastifyInstance) {
 
         // generates PDF with 'print' media type.
         await page.emulateMedia({ media: 'print' });
+        const paginationFooter = `<div style=\"font-size: 5px;color:#AAA2A0;\">
+                                        Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+                                </div>`
+        const footer = (params.footer && params.pagination) ?
+            `<div style=\"font-size: 10px;color:#000000;\"> ${params.footer} ${paginationFooter}</div>`
+            : params.footer ?
+                params.footer
+                : params.pagination ?
+                    paginationFooter
+                    : ""
+
         //  params.footer ? params.footer : 
         const pdfOptions = {
             format: "A4",
             displayHeaderFooter: true,
-            footerTemplate: params.pagination ? `<div style=\"font-size: 20px;color:#000000;\">Page <span class="pageNumber"></span> of
-                    <span class="totalPages"></span></div>` : "<span style=\"font-size: 20px;color:#000000;\">Pas de pagination</span>",
+            footerTemplate: footer,
             headerTemplate: params.header ? params.header : "",
-            margin: { top: params.header ? "40px" : "0px", bottom: (params.footer | params.pagination) ? "40px" : "0px" },
+            margin: { top: params.header ? "100px" : "0px", bottom: (params.footer | params.pagination) ? "100px" : "0px" },
         }
 
         const pdf = await page.pdf(pdfOptions);
