@@ -3,15 +3,51 @@ import { chromium } from "playwright";
 import crypto from "crypto";
 
 async function routes(app: FastifyInstance) {
-    type UrlParamsType = { token: string }
+    type TokenParamsType = {
+        token: string
+    }
+    // type ParamsType = { token: string }
+
 
     // route /
     app.get('/', async function handler() {
+        const givenToken = {
+            url: "http://wikipedia.fr",
+            pagination: false,
+            header: "version 3.0",
+            footer: "ASUL Ultimate & Dsic Golf"
+
+        }
+        const stringifiedToken = JSON.stringify(givenToken);
+
+        // encrypte token
+        const algorithm = 'aes-256-cbc';
+        if (!process.env.ENCRYPT_KEY) {
+            throw new Error("Error in decrypting token");
+        }
+        const secretKey = process.env.ENCRYPT_KEY;
+        const key = crypto.scryptSync(secretKey, 'salt', 32);
+        const iv = Buffer.alloc(16, 0);
+
+        const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+        let encryptedToken = cipher.update(stringifiedToken, 'utf8', 'hex');
+        encryptedToken += cipher.final('hex');
+        console.log("encryptedToken")
+        console.log(encryptedToken)
+
+        // code encrypted token
+        const codedToken = Buffer.from(encryptedToken, "hex").toString("base64url");
+
+        console.log("codedToken")
+        console.log(codedToken)
+
+
         return "Welcome on PDF generator"
     });
 
     // route /api/pdf
-    app.get('/api/pdf', async (request: FastifyRequest<{ Querystring: UrlParamsType }>) => {
+    app.get('/api/pdf', async (request: FastifyRequest<{ Querystring: TokenParamsType }>) => {
         // get the token given in query
         const { token } = request.query;
         if (!token) {
@@ -19,7 +55,7 @@ async function routes(app: FastifyInstance) {
         }
 
         // decode base64url
-        const urlEncrypted = Buffer.from(token, "base64url").toString("hex")
+        const decodedToken = Buffer.from(token, "base64url").toString("hex")
 
         // decrypte token to get url
         const algorithm = 'aes-256-cbc';
@@ -32,12 +68,19 @@ async function routes(app: FastifyInstance) {
 
         const decipher = crypto.createDecipheriv(algorithm, key, iv);
 
-        let url = decipher.update(urlEncrypted, 'hex', 'utf8');
-        url += decipher.final('utf8');
+        let decryptedToken = decipher.update(decodedToken, 'hex', 'utf8');
+        decryptedToken += decipher.final('utf8');
+
+        console.log("decryptedToken")
+        console.log(decryptedToken)
+
+        const params = JSON.parse(decryptedToken)
+        console.log("obj")
+        console.log(params)
 
         // ckeck if URL is valid
         const urlRegex = new RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})")
-        if (!url.match(urlRegex)) {
+        if (!params.url.match(urlRegex)) {
             throw new Error("Invalid URL");
         }
 
@@ -46,7 +89,7 @@ async function routes(app: FastifyInstance) {
         const page = await browser.newPage();
 
         // navigate to the given URL
-        await page.goto(url.toString(), { waitUntil: "networkidle" });
+        await page.goto(params.url.toString(), { waitUntil: "networkidle" });
 
         // generates PDF with 'print' media type.
         await page.emulateMedia({ media: 'print' });
