@@ -13,9 +13,9 @@ async function routes(app: FastifyInstance) {
     app.get('/', async function handler() {
         const givenToken = {
             url: "http://wikipedia.fr",
-            pagination: false,
-            header: "version 3.0",
-            footer: "ASUL Ultimate & Dsic Golf"
+            pagination: true,
+            header: "<span style=\"font-size: 20px;color:#000000;\">HEADER</span>",
+            footer: "<span style=\"font-size: 20px;color:#000000;\">FOOTER</span>"
 
         }
         const stringifiedToken = JSON.stringify(givenToken);
@@ -93,9 +93,17 @@ async function routes(app: FastifyInstance) {
 
         // generates PDF with 'print' media type.
         await page.emulateMedia({ media: 'print' });
-        const pdf = await page.pdf({
-            format: "A4"
-        });
+        //  params.footer ? params.footer : 
+        const pdfOptions = {
+            format: "A4",
+            displayHeaderFooter: true,
+            footerTemplate: params.pagination ? `<div style=\"font-size: 20px;color:#000000;\">Page <span class="pageNumber"></span> of
+                    <span class="totalPages"></span></div>` : "<span style=\"font-size: 20px;color:#000000;\">Pas de pagination</span>",
+            headerTemplate: params.header ? params.header : "",
+            margin: { top: params.header ? "40px" : "0px", bottom: (params.footer | params.pagination) ? "40px" : "0px" },
+        }
+
+        const pdf = await page.pdf(pdfOptions);
 
         await browser.close();
         return pdf;
