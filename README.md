@@ -15,7 +15,7 @@ npm i
 From the root, run
 
 ```
-npm run dev
+docker compose up --build
 ```
 
 ## Branches naming convention
@@ -34,3 +34,9 @@ After this prefix, your banch name should contain only lower case letters and da
 For each task, a new branch should be opened. When the work is ready to be merged, a merge request (MR) should be openeded between this new branch and the `dev` one.
 
 Later, when the `dev` branch is ready to go in production, a merge request between `dev` and `main` is created and merged.
+
+## Using the app
+
+The route to download a pdf is /api/pdf at which you must pass a token.
+The token will be a JSON object containing the url to pdf, and options as pagination, header or footer. You may pass HTML to header and footer fields.
+This token will be stringified, encrypted and finally coded to be given to API.

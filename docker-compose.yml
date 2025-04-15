@@ -4,7 +4,7 @@ services:
     ports:
       - 3001:3000
     environment:
-      ENCRYPT_KEY: "mySecretKey"
+      ENCRYPT_KEY: mySecretKey
     command: npm run dev
     restart: unless-stopped
     volumes:
