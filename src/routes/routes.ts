@@ -7,33 +7,6 @@ async function routes(app: FastifyInstance) {
 
     // route /
     app.get('/', async function handler() {
-        const givenToken = {
-            url: "https://lagirodiere.com",
-            pagination: true,
-            header: "<span style=\"font-size: 20px;color:#EC411C;\">ASUL ULTIMATE & DISC GOLF</span>",
-            footer: "<span style=\"font-size: 10px;color:#EC411C;\">contact@asul-ultimate.org</span>"
-        }
-        const stringifiedToken = JSON.stringify(givenToken);
-
-        // encrypte token
-        const algorithm = 'aes-256-cbc';
-        if (!process.env.ENCRYPT_KEY) {
-            throw new Error("Error in decrypting token");
-        }
-        const secretKey = process.env.ENCRYPT_KEY;
-        const key = crypto.scryptSync(secretKey, 'salt', 32);
-        const iv = Buffer.alloc(16, 0);
-
-        const cipher = crypto.createCipheriv(algorithm, key, iv);
-
-        let encryptedToken = cipher.update(stringifiedToken, 'utf8', 'hex');
-        encryptedToken += cipher.final('hex');
-
-        // code encrypted token
-        const codedToken = Buffer.from(encryptedToken, "hex").toString("base64url");
-
-        console.log("codedToken")
-        console.log(codedToken)
         return "Welcome on PDF generator"
     });
 
